@@ -1,0 +1,28 @@
+questions:
+id: q1
+    stage: Data Processing
+   text"Provide the number of clusters present in the combined samples object, with dims = 26.5, resolution = 0.2 "
+   
+
+
+id: q2
+   stage: Data Processing
+   text: "Provide the number of mitochondrial contamination present in merged object (combined all samples)?"
+   
+
+id: q3
+   stage: Data Processing
+   text: "Provide the number up and down  DGE identified in DCT cells of 24m Knock out vs Wildtype samples with more than log 2 fold difference"
+   
+
+
+id: q4
+   stage: Gene Enrichments and ontologies
+   text: "What are the top 5 ontologies of PCT-S3 upregulated identified in WikiPathways"
+   
+
+
+id: q5
+   stage: Gene Enrichments and ontologies
+   text: "What are the top 5 ontologies of Inj PT cells downregulated identified in KEGG"
+  

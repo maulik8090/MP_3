@@ -1,0 +1,75 @@
+SR006706_21 <- Read10X_h5("C:/Users/maulik/Box/Gewin Lab Folder/Maulik/Ageing_MPC2/SR006706_26/outs/filtered_feature_bc_matrix.h5",use.names = T)
+SR006706_21<-CreateSeuratObject(counts = SR006706_21, min.cells = 3, min.features = 20, project = "MPC2") 
+SR006706_21[["percent.mt"]]<-PercentageFeatureSet(SR006706_21, pattern ="^mt-") 
+SR006706_21[["percent.hb"]]<-PercentageFeatureSet(SR006706_21, pattern ="^Hb") 
+SR006706_21[["percent.gm"]]<-PercentageFeatureSet(SR006706_21, pattern ="^Gm") 
+SR006706_21[["percent.rp"]]<-PercentageFeatureSet(SR006706_21, pattern ="^Rp")
+SR006706_21<-SetIdent(SR006706_21, value = "RNA") 
+VlnPlot(SR006706_21, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3) 
+plot1 <- FeatureScatter(SR006706_21, feature1 = "nCount_RNA", feature2 = "percent.mt")
+plot2 <- FeatureScatter(SR006706_21, feature1 = "nCount_RNA", feature2 ="nFeature_RNA") 
+plot1 + plot2 
+SR006706_21 <- subset(SR006706_21, subset = nFeature_RNA > 500 & nFeature_RNA < 7500 & percent.mt <1 ) 
+plot1 <-FeatureScatter(SR006706_21, feature1 = "nCount_RNA", feature2 = "percent.mt")
+plot2 <- FeatureScatter(SR006706_21, feature1 = "nCount_RNA", feature2 = "nFeature_RNA") 
+plot1 + plot2 
+SR006706_21 <- NormalizeData(SR006706_21,normalization.method = "LogNormalize", scale.factor = 10000)
+SR006706_21<-NormalizeData(SR006706_21) 
+SR006706_21 <- FindVariableFeatures(SR006706_21,selection.method = "vst", nfeatures = 2000) 
+top10 <- head(VariableFeatures(SR006706_21), 10) 
+plot1 <- VariableFeaturePlot(SR006706_21)
+plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
+plot1 + plot2 
+SR006706_21 <- PercentageFeatureSet(SR006706_21, pattern = "^MT-",col.name = "percent.mt") 
+SR006706_21<-ScaleData(object = SR006706_21) 
+SR006706_21 <-RunPCA(object = SR006706_21) 
+SR006706_21 <- RunUMAP(object= SR006706_21, dims = 1:30) 
+SR006706_21 <- FindNeighbors(object = SR006706_21, dims =1:30) 
+SR006706_21 <- FindClusters(object = SR006706_21, resolution = .25) 
+DimPlot(object = SR006706_21, reduction = "umap", label = TRUE)
+dotgenes <-c("Nphs1","Wt1","Fhl2","Pdgfrb","Rida","Slc5a2","Slc5a12","Slc22a6","Hrsp12","Slc13a3",
+             "Slc7a13","Atp11a","Slc14a2","Aqp1","Agt","Clcnka","Slc12a1","Umod","Slc9a3","Slc12a3","Calb1","Slc8a1","Scnn1b","Aqp2","Atp6v1g3","Kit","Aqp6","Slc26a4","Hmx2","Gsdmc2","Gsdmc3","Emcn","Flt1","Ptprc","Adgre1","Thy1","Bank1",
+             "Vcam1","Icam1") 
+Inflammatory_PT<-c("Gm17268", "Ccl2","Dock10", " Vcam1", "Pakap", "Bmp6",  "Zbtb7c", "Cd44", "St3gal3", "Stx11", "Slc4a4 ", "Itgav", "Hivep1", "Ankrd6",  "Gm16685",  "Arhgef3",  "Malt1",  "Mfhas1",  "Il34",  "Bnc2"  )
+
+# for dotplot below 
+
+DotPlot(SR006706_21,features=dotgenes,scale.max = 150, cols =
+          c("yellow","red"))+ scale_x_discrete(limit=rev)+ labs(x=NULL,
+                                                                y=NULL,title=print(paste("samples.merged")))+
+  theme_classic()+
+  theme(axis.text.x=element_text(angle=90,vjust=0.5,hjust=1,size=14,colour
+                                 = "black"), axis.text.y=element_text(size=14,colour = "black"),
+        legend.text = element_text(size=14,colour = "black"),
+        panel.grid.minor=element_blank(), panel.grid.major=element_line(colour =
+                                                                          "gray",linetype ="dashed",size=0.35))
+# Cell selector 
+SR006706_21<-NormalizeData(SR006706_21) 
+SR006706_21 <- FindVariableFeatures(SR006706_21,selection.method = "vst", nfeatures = 2000)SR006706_21<-ScaleData(object = SR006706_21) 
+SR006706_21 <-RunPCA(object = SR006706_21) 
+SR006706_21 <- RunUMAP(object= SR006706_21, dims = 1:30) 
+SR006706_21 <- FindNeighbors(object = SR006706_21, dims =1:30) 
+SR006706_21 <- FindClusters(object = SR006706_21, resolution = .25) 
+DimPlot(object = SR006706_21, reduction = "umap", label = TRUE)
+select.cells <- CellSelector(plot = plot2)
+SR006706_21<-subset(SR006706_21, idents = 'selected', invert = TRUE)
+Idents(SR006706_21) <- "seurat_clusters"
+DimPlot(object = SR006706_21, reduction = "umap", label = TRUE)
+DotPlot(SR006706_21,features=dotgenes,scale.max = 100,cols =
+          c("yellow","red"))+ scale_x_discrete(limit=rev)+ labs(x=NULL,y=NULL,title=print(paste("samples.merged")))+
+  theme_classic()+theme(axis.text.x=element_text(angle=90,vjust=0.5,hjust=1,size=14,colour= "black"), axis.text.y=element_text(size=14,colour = "black"),
+        legend.text = element_text(size=14,colour = "black"),panel.grid.minor=element_blank(), panel.grid.major=element_line(colour ="gray",linetype ="dashed",size=0.35))
+
+
+
+
+# Cluster identity 
+
+SR006706_21.markers <- FindAllMarkers(SR006706_21, only.pos = TRUE)
+SR006706_21.markers %>%
+  group_by(cluster) %>%
+  dplyr::filter(avg_log2FC > 1)
+Idents(SR006706_21) <- "seurat_clusters"
+Idents(SR006706_21)
+table(Idents(SR006706_21))
+
