@@ -6,4 +6,6 @@ Smpl6, Smpl7, Smpl8 are 24 month Wildtype samples.
 Smpl10, Smpl1, Smpl2 are24 month old Cpt1a Knockout samples.
 
 
-All samples are processed and merged into the single Seurat object to analyze and Differential Gene expression were generated for 24 month knockout vs Wildtype witht he kidney specific cell types the DGE cell type specific is provided into the data for the ontology analysis. 
+All samples are processed and merged into the single Seurat object to analyze and Differential Gene expression were generated for 24 month knockout vs Wildtype witht he kidney specific cell types the DGE cell type specific is provided into the data for the ontology analysis.
+
+The packages used Seurat,DoubletFinder, EnrichR and clusterProfiler.
